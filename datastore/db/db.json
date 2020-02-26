@@ -1,0 +1,31 @@
+{
+    "abc": {
+        "data1": "value1",
+        "data2": "value2",
+        "data3": "value3",
+        "Time-To-Live": 5000,
+        "CreatedAt": "2020-02-27T05:07:53.133320"
+    },
+    "def": {
+        "data1": "value1",
+        "data2": "value2",
+        "data3": "value3",
+        "Time-To-Live": 50,
+        "CreatedAt": "2020-02-27T05:07:53.133343"
+    },
+    "ghi": {
+        "data1": "value1",
+        "data2": "value2",
+        "data3": "value3",
+        "data4": "value4",
+        "CreatedAt": "2020-02-27T05:07:53.133352",
+        "Time-To-Live": null
+    },
+    "jkl": {
+        "data1": "value1",
+        "data2": "value2",
+        "data3": "value3",
+        "Time-To-Live": 250,
+        "CreatedAt": "2020-02-27T05:07:53.133359"
+    }
+}
