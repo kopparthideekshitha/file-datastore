@@ -1,18 +1,14 @@
-__author__ = 'prabin-sr'
-
 from sys import exit
-from flask import Flask
 from argparse import ArgumentParser
 from configs import settings, configurations
 from utils.filehandler import FilePreprocess
-from CRD.views import CreateData, ReadData, DeleteData
+from CRD.functions import DataStoreCRD
 
 
 # Adding/Enabling CommandLineArguments: --datastore
 parser = ArgumentParser()
 parser.add_argument('--datastore', help='Enter the datastore absolute path.')
 args = parser.parse_args()
-
 
 # Selecting the DataStore Directory.
 # Select user provided datastore path else, select the default path.
@@ -28,20 +24,11 @@ if not directory_created:
     exit(0)
 
 
-app = Flask(__name__)
+key = 'ghi'
 
 
-# Flask App Configurations
-app.config['DEBUG'] = settings.DEBUG
-app.config['SECRET_KEY'] = settings.SECRET_KEY
-
-
-# API Endpoints
-app.add_url_rule('/datastore/create', view_func=CreateData.as_view('create', db_path), methods=['POST'])
-app.add_url_rule('/datastore/read', view_func=ReadData.as_view('read', db_path), methods=['GET'])
-app.add_url_rule('/datastore/delete', view_func=DeleteData.as_view('delete', db_path), methods=['DELETE'])
-
-
-# Initiates Flask Server
-if __name__ == '__main__':
-    app.run(host=settings.HOST, port=settings.PORT)
+################################
+'''DELETE DATA FROM DATASTORE'''
+_data_found, message = DataStoreCRD().check_delete_data(key, db_path)
+print(message)
+################################

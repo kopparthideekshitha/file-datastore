@@ -26,8 +26,6 @@ class DataStoreCRD:
             if remaining_seconds <= 0:
                 return False
 
-        del value['CreatedAt']
-
         return value
 
     def check_create_data(self, json_data, db_path):
@@ -73,7 +71,7 @@ class DataStoreCRD:
         # If present return Error message
         for key in json_data.keys():
             if key in data.keys():
-                return False, "Key already present in DataStore."
+                return False, "Key already exist in DataStore."
 
         # Add CreatedAt time to data. Also add Time-To-Live if the data dont have in it.
         for key, value in json_data.items():
@@ -114,7 +112,11 @@ class DataStoreCRD:
         # Read data from the datasource for the given key.
         status, message = self.read_delete_preprocess(key, db_path)
 
-        return status, message
+        data = message[key]
+
+        del data['CreatedAt']
+
+        return status, data
 
     def check_delete_data(self, key, db_path):
         status, message = self.read_delete_preprocess(key, db_path)
