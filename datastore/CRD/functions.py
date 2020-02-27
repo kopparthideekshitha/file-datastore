@@ -1,5 +1,6 @@
 import json
 import fcntl
+import threading
 from os import path
 from datetime import datetime, timedelta
 from dateutil.parser import parse
@@ -75,15 +76,43 @@ class DataStoreCRD:
 
         # Check any key present in previous datastore data.
         # If present return Error message
-        for key in json_data.keys():
-            if key in data.keys():
-                return False, "Key already exist in DataStore."
+        '''
+        # for key in json_data.keys():
+        #     if key in data.keys():
+        #         return False, "Key already exist in DataStore."
+        '''
+        have_key = any(x in json_data.keys() for x in data.keys())
+        if have_key:
+            return False, "Key already exist in DataStore."
 
-        # Add CreatedAt time to data. Also add Time-To-Live if the data dont have in it.
-        for key, value in json_data.items():
-            value["CreatedAt"] = datetime.now().isoformat()
-            value["Time-To-Live"] = value["Time-To-Live"] if 'Time-To-Live' in value else None
-            data[key] = value
+        """ Threading Mechanism Start """
+        def prepare_data_create(json_data_keys):
+            # Add CreatedAt time to data. Also add Time-To-Live if the data dont have in it.
+            for key in json_data_keys:
+                singleton_json = json_data[key]
+                singleton_json["CreatedAt"] = datetime.now().isoformat()
+                singleton_json["Time-To-Live"] = singleton_json["Time-To-Live"] if 'Time-To-Live' in singleton_json else None
+                data[key] = singleton_json
+
+        # No of threads are set to 4.
+        thread_count = 4
+        items = list(json_data.keys())
+
+        split_size = len(items) // thread_count
+
+        threads = []
+        for i in range(thread_count):
+            start = i * split_size
+            end = None if i+1 == thread_count else (i+1) * split_size
+
+            threads.append(threading.Thread(target=prepare_data_create, args=(items[start:end], ), name=f"t{i+1}"))
+            threads[-1].start()
+
+        # Wait for all threads to finish.
+        for t in threads:
+            t.join()
+
+        """ Threading Mechanism End """
 
         # Write the new data.
         with open(datastore, 'w+') as f:
