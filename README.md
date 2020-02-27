@@ -36,8 +36,8 @@ store.
 2. Python: Python3.6 or higher
 3. Install Python dependency packages: `python3 -m pip install -r requirements.txt`
 4. Run `app.py` to run the backend server.
-  a). To start datastore from default file location, run `python3 app.py`
-  b). To start datastore from user defined file location, run `python3 app.py --datastore=<absolute_path_of_your_datastore>` 
+    1. To start datastore from default file location, run `python3 app.py`
+    2. To start datastore from user defined file location, run `python3 app.py --datastore=<absolute_path_of_your_datastore>` 
 
 # Test Environment Setup
 1. To test the Create operation of data in datastore, run `python3 test_create_data.py`
@@ -49,3 +49,6 @@ store.
 2. A class function `DataStoreCRD().check_create_data(<key-value-data>, <datastore directory>)` can be used to create a data in DataStore.
 3. A class function `DataStoreCRD().check_read_data(<key>, <datastore directory>)` can be used to read a data from the DataStore.
 4. A class function `DataStoreCRD().check_delete_data(<key>, <datastore directory>)` can be used to delete a data from the DataStore.
+
+# Licence
+This software is licenced under *Apache License Version 2.0, January 2004 http://www.apache.org/licenses/*.
