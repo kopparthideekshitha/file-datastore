@@ -50,5 +50,10 @@ store.
 3. A class function `DataStoreCRD().check_read_data(<key>, <datastore directory>)` can be used to read a data from the DataStore.
 4. A class function `DataStoreCRD().check_delete_data(<key>, <datastore directory>)` can be used to delete a data from the DataStore.
 
+# REST API Examples
+1. Create data in DataStore - **API**: `http://localhost:5000/datastore/create` & **Data**: `{"abc": {"data1": "value1", "data2": "value2", "data3": "value3", "Time-To-Live": 5000, "CreatedAt": "2020-02-27T05:07:53.133320"}, "def": {"data1": "value1", "data2": "value2", "data3": "value3", "Time-To-Live": 50, "CreatedAt": "2020-02-27T05:07:53.133343"}}` & **API Type**: `POST`.
+2. Read data from datastore - **API**: `http://localhost:5000/datastore/read?key=abc` & **API Type**: `GET`.
+3. Delete data from datastore - **API**: `http://localhost:5000/datastore/delete?key=abc` & **API Type**: `DELETE`.
+
 # Licence
 This software is licenced under *Apache License Version 2.0, January 2004 http://www.apache.org/licenses/*.
