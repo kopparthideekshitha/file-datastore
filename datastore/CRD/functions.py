@@ -1,4 +1,5 @@
 import json
+import fcntl
 from os import path
 from datetime import datetime, timedelta
 from dateutil.parser import parse
@@ -60,7 +61,12 @@ class DataStoreCRD:
         data = {}
         if path.isfile(datastore):
             with open(datastore) as f:
+                # Make sure single process only allowed to access the file at a time.
+                # Locking file.
+                fcntl.flock(f, fcntl.LOCK_EX)
                 data = json.load(f)
+                # Releasing the file lock.
+                fcntl.flock(f, fcntl.LOCK_UN)
 
                 # Check if file size exceeded 1GB size.
                 prev_data_obj = json.dumps(data)
@@ -81,7 +87,12 @@ class DataStoreCRD:
 
         # Write the new data.
         with open(datastore, 'w+') as f:
+            # Make sure single process only allowed to access the file at a time.
+            # Locking file.
+            fcntl.flock(f, fcntl.LOCK_EX)
             json.dump(data, f)
+            # Releasing the file lock.
+            fcntl.flock(f, fcntl.LOCK_UN)
 
         return True, "Data created in DataStore."
 
@@ -94,7 +105,12 @@ class DataStoreCRD:
 
         # Read previous datastore data if exists.
         with open(datastore) as f:
+            # Make sure single process only allowed to access the file at a time.
+            # Locking file.
+            fcntl.flock(f, fcntl.LOCK_EX)
             data = json.load(f)
+            # Releasing the file lock.
+            fcntl.flock(f, fcntl.LOCK_UN)
 
         # Check for the input key available in data.
         if key not in data.keys():
@@ -111,6 +127,8 @@ class DataStoreCRD:
     def check_read_data(self, key, db_path):
         # Read data from the datasource for the given key.
         status, message = self.read_delete_preprocess(key, db_path)
+        if not status:
+            return status, message
 
         data = message[key]
 
@@ -131,6 +149,11 @@ class DataStoreCRD:
 
         # Write the new data to the datasource after data deletion.
         with open(datastore, 'w+') as f:
+            # Make sure single process only allowed to access the file at a time.
+            # Locking file.
+            fcntl.flock(f, fcntl.LOCK_EX)
             json.dump(message, f)
+            # Releasing the file lock.
+            fcntl.flock(f, fcntl.LOCK_UN)
 
         return True, "Data is deleted from the datastore."
